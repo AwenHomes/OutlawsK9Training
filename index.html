@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Free dog behavior assessment from Outlaws K9 Training. Discover your dog's risk score and get an immediate action plan.">
+  <title>Free Behavior Assessment | Outlaws K9 Training</title>
+
+  <!-- PLACEHOLDER: Replace with actual favicon -->
+  <!-- <link rel="icon" href="assets/images/favicon.ico"> -->
+
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ===== Section 1: Hero / Hook ===== -->
+  <section id="hero" class="section active">
+    <div class="hero-content">
+
+      <!-- PLACEHOLDER: Replace with actual logo -->
+      <!-- <img src="assets/images/logo.png" alt="Outlaws K9 Training" class="hero-logo"> -->
+
+      <span class="hero-badge">Free 60-Second Assessment</span>
+
+      <h1 class="hero-title">
+        Your Dog's Behavior Problem <span class="highlight">Won't Fix Itself.</span><br>
+        It Will Get Worse.
+      </h1>
+
+      <p class="hero-subtitle">Your dog isn't broken. But that couch definitely is.</p>
+
+      <p class="hero-description">
+        The barking at 3 AM. The lunging on walks. The "sorry, he's friendly!" moments that
+        aren't fooling anyone anymore. You've Googled it. You've tried the tricks. And yet
+        here you are — because the problem is still here, too.
+        <br><br>
+        Take this free 60-second assessment. We'll tell you exactly what's going on, how
+        bad it actually is, and what to do next. No sugarcoating. No generic advice.
+        Just the truth about <strong>your</strong> dog.
+      </p>
+
+      <div class="hero-cta-wrap">
+        <button id="start-quiz-btn" class="btn btn-cta">
+          Take the Free Behavior Assessment
+        </button>
+      </div>
+
+      <div class="trust-badges">
+        <span class="trust-badge"><strong>500+</strong> Dogs Helped</span>
+        <span class="trust-badge"><strong>Real</strong> Results in 7 Days</span>
+        <span class="trust-badge"><strong>1-on-1</strong> Expert Guidance</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 2: Dog Info (Step 1/3) ===== -->
+  <section id="dog-info" class="section">
+    <div class="container">
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" class="progress-fill"></div>
+        </div>
+        <span class="progress-label" class="progress-label">Step 1 of 3</span>
+      </div>
+
+      <h2 class="question-title" style="text-align:center; margin-bottom:0.35rem;">Tell Us About Your Dog</h2>
+      <p class="subtext" style="text-align:center; margin-bottom:1.75rem;">We need the basics before we can judge — er, assess — the situation.</p>
+
+      <div id="dog-info-form">
+        <!-- Populated by quiz-engine.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 3: Behavior Selection (Step 2/3) ===== -->
+  <section id="quiz" class="section">
+    <div class="container">
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" class="progress-fill"></div>
+        </div>
+        <span class="progress-label" class="progress-label">Step 2 of 3</span>
+      </div>
+
+      <div id="quiz-form">
+        <!-- Populated by quiz-engine.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 4: Severity Context (Step 3/3) ===== -->
+  <section id="severity" class="section">
+    <div class="container">
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" class="progress-fill"></div>
+        </div>
+        <span class="progress-label" class="progress-label">Step 3 of 3</span>
+      </div>
+
+      <h2 class="question-title" style="text-align:center; margin-bottom:0.35rem;">A Few More Details</h2>
+      <p class="subtext" style="text-align:center; margin-bottom:1.75rem;">Almost done. This is the part where we figure out how urgent this really is.</p>
+
+      <div id="severity-form">
+        <!-- Populated by quiz-engine.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Section 5: Personalized Results ===== -->
+  <section id="results" class="section">
+    <div id="results-content">
+      <!-- Populated by results.js -->
+    </div>
+  </section>
+
+  <!-- Scripts: data first, then engine, then results renderer -->
+  <script src="js/quiz-data.js"></script>
+  <script src="js/quiz-engine.js"></script>
+  <script src="js/results.js"></script>
+
+</body>
+</html>
