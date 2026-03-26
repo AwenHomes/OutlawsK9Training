@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Unsubscribe from Outlaws K9 Training email and SMS communications.">
+  <title>Unsubscribe | Outlaws K9 Training</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="legal-page">
+
+  <div class="legal-container unsub-container">
+
+    <nav class="legal-nav">
+      <a href="index.html" class="legal-back">&larr; Back to Home</a>
+    </nav>
+
+    <h1>Unsubscribe</h1>
+    <p class="unsub-intro">We're sorry to see you go. Enter your email below and select what you'd like to opt out of. Your request will be processed immediately.</p>
+
+    <form id="unsubscribe-form" class="unsub-form" novalidate>
+
+      <div class="form-group">
+        <label for="unsub-email" class="form-label">Email Address <span class="required">*</span></label>
+        <input type="email" id="unsub-email" name="email" placeholder="your@email.com" required class="form-input" autocomplete="email" />
+      </div>
+
+      <div class="unsub-options">
+        <p class="form-label">What would you like to unsubscribe from?</p>
+
+        <label class="consent-label">
+          <input type="checkbox" name="unsubscribe_email" checked />
+          <span class="consent-text">Email communications (behavior reports, training tips)</span>
+        </label>
+
+        <label class="consent-label">
+          <input type="checkbox" name="unsubscribe_sms" checked />
+          <span class="consent-text">SMS/phone communications</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-email">Unsubscribe</button>
+
+      <div class="form-error" id="unsub-error" role="alert" aria-live="polite"></div>
+
+    </form>
+
+    <div class="unsub-success" id="unsub-success" style="display:none;">
+      <h2>You've been unsubscribed.</h2>
+      <p>Your request has been processed. You will no longer receive the selected communications from Outlaws K9 Training.</p>
+      <p>If you change your mind, you're always welcome to take a new <a href="index.html">behavior assessment</a> and re-subscribe.</p>
+    </div>
+
+    <div class="unsub-note">
+      <p>You can also opt out of SMS by replying <strong>STOP</strong> to any text message from us.</p>
+      <p>For data deletion requests, please contact us at:</p>
+      <!-- PLACEHOLDER: Replace with actual contact information -->
+      <address>
+        Outlaws K9 Training<br>
+        Email: [contact@outlawsk9training.com]
+      </address>
+    </div>
+
+    <footer class="legal-footer">
+      <p>&copy; 2026 Outlaws K9 Training. All rights reserved.</p>
+      <p><a href="index.html">Home</a> | <a href="privacy-policy.html">Privacy Policy</a> | <a href="terms-of-service.html">Terms of Service</a></p>
+    </footer>
+
+  </div>
+
+  <script src="js/compliance.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      ComplianceModule.initUnsubscribeForm();
+    });
+  </script>
+
+</body>
+</html>
