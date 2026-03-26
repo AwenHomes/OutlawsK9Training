@@ -60,15 +60,13 @@ const ResultsRenderer = (function () {
     gaugeWrap.className = "gauge-container";
 
     gaugeWrap.innerHTML =
-      '<div class="gauge">' +
+      '<div class="gauge-arc">' +
         '<div class="gauge-body">' +
           '<div class="gauge-fill" id="gauge-fill"></div>' +
-          '<div class="gauge-cover">' +
-            '<span class="gauge-percentage" id="gauge-percentage">0%</span>' +
-          '</div>' +
         '</div>' +
       '</div>' +
-      '<div class="gauge-label-wrap">' +
+      '<div class="gauge-stats">' +
+        '<span class="gauge-percentage" id="gauge-percentage">0%</span>' +
         '<span class="gauge-risk-label ' + score.riskLevel.className + '">' +
           score.riskLevel.label + ' Risk' +
         '</span>' +
