@@ -270,7 +270,7 @@ const ResultsRenderer = (function () {
     container.appendChild(cta);
   }
 
-  // --- Email Capture ---
+  // --- Lead Capture (TCPA / CAN-SPAM / DNC Compliant) ---
 
   function renderEmailCapture(container, score) {
     var emailBlock = document.createElement("div");
@@ -279,32 +279,69 @@ const ResultsRenderer = (function () {
     emailBlock.innerHTML =
       '<div class="email-inner">' +
         '<h3>Want this report sent to your inbox?</h3>' +
-        '<p>Get ' + escapeHtml(score.dogName) + '\'s full behavior breakdown + a bonus action checklist delivered straight to your email. No spam. Just help.</p>' +
-        '<form class="email-form" id="email-form">' +
-          '<!-- PLACEHOLDER: Set form action to email service endpoint (Mailchimp, ConvertKit, etc.) -->' +
-          '<input type="email" name="email" placeholder="your@email.com" required class="email-input" />' +
+        '<p>Get ' + escapeHtml(score.dogName) + '\'s full behavior breakdown + a bonus action checklist delivered straight to your email.</p>' +
+        '<form class="lead-form" id="lead-form" novalidate>' +
+
+          // Email (required)
+          '<div class="form-group">' +
+            '<label for="lead-email" class="form-label">Email Address <span class="required">*</span></label>' +
+            '<input type="email" id="lead-email" name="email" placeholder="your@email.com" required class="form-input" autocomplete="email" />' +
+          '</div>' +
+
+          // Phone (optional)
+          '<div class="form-group">' +
+            '<label for="lead-phone" class="form-label">Phone Number <span class="optional">(optional)</span></label>' +
+            '<input type="tel" id="lead-phone" name="phone" placeholder="(555) 123-4567" class="form-input" autocomplete="tel" />' +
+          '</div>' +
+
+          // Honeypot (anti-bot, hidden)
+          '<input type="text" name="website" tabindex="-1" autocomplete="off" class="ohnohoney" />' +
+
+          // Hidden data fields
           '<input type="hidden" name="dog_name" value="' + escapeHtml(score.dogName) + '" />' +
           '<input type="hidden" name="breed" value="' + escapeHtml(score.breed) + '" />' +
-          '<input type="hidden" name="risk_level" value="' + score.riskLevel.label + '" />' +
-          '<input type="hidden" name="top_behaviors" value="' + score.topBehaviors.join(",") + '" />' +
-          '<button type="submit" class="btn btn-email">Send My Report</button>' +
+          '<input type="hidden" name="age_range" value="' + escapeHtml(score.ageRange) + '" />' +
+          '<input type="hidden" name="risk_level" value="' + escapeHtml(score.riskLevel.label) + '" />' +
+          '<input type="hidden" name="top_behaviors" value="' + score.topBehaviors.map(function(b) { return escapeHtml(b); }).join(",") + '" />' +
+          '<input type="hidden" name="form_loaded_at" value="' + Date.now() + '" />' +
+
+          // Email consent checkbox (required — CAN-SPAM)
+          '<div class="consent-group">' +
+            '<label class="consent-label">' +
+              '<input type="checkbox" id="email-consent" name="email_consent" required />' +
+              '<span class="consent-text">I agree to receive emails from Outlaws K9 Training with my dog\'s behavior report and training tips. I understand I can <a href="unsubscribe.html" target="_blank">unsubscribe</a> at any time.</span>' +
+            '</label>' +
+          '</div>' +
+
+          // SMS/Phone consent checkbox (TCPA — shown only when phone is entered)
+          '<div class="consent-group sms-consent-group" id="sms-consent-group" style="display:none;">' +
+            '<label class="consent-label">' +
+              '<input type="checkbox" id="sms-consent" name="sms_consent" />' +
+              '<span class="consent-text">By providing my phone number, I give Outlaws K9 Training express written consent to contact me by phone call or text message at the number provided, including by automated means, regarding dog training services. <strong>Consent is not a condition of purchase.</strong> Message and data rates may apply. Reply STOP to opt out. Estimated frequency: up to 4 messages/month.</span>' +
+            '</label>' +
+          '</div>' +
+
+          // Submit button
+          '<button type="submit" class="btn btn-email" id="lead-submit-btn">Send My Report</button>' +
+
+          // Form error display
+          '<div class="form-error" id="lead-form-error" role="alert" aria-live="polite"></div>' +
+
+          // Legal links
+          '<p class="legal-links">By submitting, you agree to our <a href="privacy-policy.html" target="_blank">Privacy Policy</a> and <a href="terms-of-service.html" target="_blank">Terms of Service</a>.</p>' +
+
         '</form>' +
-        '<p class="email-note">We\'ll also include tips specific to ' + escapeHtml(score.dogName) + '\'s breed and age. Because we\'re nice like that.</p>' +
+
+        // AI disclaimer
+        '<p class="ai-disclaimer">This assessment is generated algorithmically and is for informational purposes only. It is not a substitute for professional veterinary or behavioral consultation. Results do not guarantee specific outcomes.</p>' +
+
       '</div>';
 
     container.appendChild(emailBlock);
 
-    // Bind form submit
-    var form = document.getElementById("email-form");
-    if (form) {
-      form.addEventListener("submit", function (e) {
-        e.preventDefault();
-        // PLACEHOLDER: Integrate with email service
-        var btn = form.querySelector("button");
-        btn.textContent = "Sent! Check your inbox.";
-        btn.disabled = true;
-        btn.classList.add("btn-success");
-      });
+    // Initialize compliance form handling
+    if (typeof ComplianceModule !== "undefined") {
+      ComplianceModule.initForm();
     }
   }
 

@@ -9,6 +9,9 @@
   <!-- PLACEHOLDER: Replace with actual favicon -->
   <!-- <link rel="icon" href="assets/images/favicon.ico"> -->
 
+  <!-- Security: CSP meta tag fallback (primary headers in _headers file) -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; connect-src 'self' https://*.supabase.co; img-src 'self' data:; frame-ancestors 'none';">
+
   <!-- Google Fonts: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -119,10 +122,24 @@
     </div>
   </section>
 
-  <!-- Scripts: data first, then engine, then results renderer -->
+  <!-- Site Footer -->
+  <footer class="site-footer">
+    <div class="footer-content">
+      <p class="footer-brand">&copy; 2026 Outlaws K9 Training. All rights reserved.</p>
+      <nav class="footer-links">
+        <a href="privacy-policy.html">Privacy Policy</a>
+        <a href="terms-of-service.html">Terms of Service</a>
+        <a href="unsubscribe.html">Unsubscribe</a>
+      </nav>
+      <p class="footer-disclaimer">Assessment results are algorithmically generated for informational purposes only. Not a substitute for professional veterinary or behavioral consultation. Results do not guarantee specific outcomes.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts: data first, then engine, then results renderer, then compliance -->
   <script src="js/quiz-data.js"></script>
   <script src="js/quiz-engine.js"></script>
   <script src="js/results.js"></script>
+  <script src="js/compliance.js"></script>
 
 </body>
 </html>

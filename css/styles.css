@@ -979,3 +979,376 @@ input[type="email"]::placeholder {
     width: 100%;
   }
 }
+
+/* ============================================================
+   COMPLIANCE & LEGAL STYLES
+   Lead capture form, consent checkboxes, legal pages, footer
+   ============================================================ */
+
+/* --- Lead Capture Form --- */
+
+.lead-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.form-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #d1d5db;
+}
+
+.form-label .required {
+  color: #dc2626;
+}
+
+.form-label .optional {
+  font-weight: 400;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+}
+
+.form-input {
+  padding: 0.75rem 1rem;
+  border: 1px solid #374151;
+  border-radius: 0.5rem;
+  background: #111827;
+  color: #f9fafb;
+  font-size: 1rem;
+  font-family: "Inter", sans-serif;
+  transition: border-color 0.2s;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25);
+}
+
+/* Honeypot field — invisible to real users */
+.ohnohoney {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 0;
+  width: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* --- Consent Checkboxes --- */
+
+.consent-group {
+  padding: 0.75rem 0;
+}
+
+.consent-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  cursor: pointer;
+  line-height: 1.5;
+}
+
+.consent-label input[type="checkbox"] {
+  margin-top: 0.25rem;
+  min-width: 18px;
+  min-height: 18px;
+  accent-color: #0d9488;
+  cursor: pointer;
+}
+
+.consent-text {
+  font-size: 0.8125rem;
+  color: #d1d5db;
+  line-height: 1.55;
+}
+
+.consent-text a {
+  color: #14b8a6;
+  text-decoration: underline;
+}
+
+.consent-text strong {
+  color: #f9fafb;
+}
+
+.sms-consent-group {
+  background: rgba(13, 148, 136, 0.06);
+  border: 1px solid #1f2937;
+  border-radius: 0.5rem;
+  padding: 0.875rem;
+}
+
+/* --- Form Error & Legal Links --- */
+
+.form-error {
+  display: none;
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 0;
+}
+
+.legal-links {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.legal-links a {
+  color: #14b8a6;
+  text-decoration: underline;
+}
+
+.ai-disclaimer {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  text-align: center;
+  margin-top: 1rem;
+  line-height: 1.5;
+  font-style: italic;
+}
+
+/* --- Site Footer --- */
+
+.site-footer {
+  background: #0a0a0a;
+  border-top: 1px solid #1f2937;
+  padding: 2rem 1.5rem;
+  margin-top: 2rem;
+}
+
+.footer-content {
+  max-width: 640px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.footer-brand {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin-bottom: 0.75rem;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.footer-links a {
+  font-size: 0.8125rem;
+  color: #14b8a6;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footer-links a:hover {
+  color: #0d9488;
+  text-decoration: underline;
+}
+
+.footer-disclaimer {
+  font-size: 0.6875rem;
+  color: #6b7280;
+  line-height: 1.5;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   LEGAL PAGES (Privacy, Terms, Unsubscribe)
+   ============================================================ */
+
+.legal-page {
+  background: #0a0a0a;
+  color: #d1d5db;
+  min-height: 100vh;
+}
+
+.legal-container {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.legal-nav {
+  margin-bottom: 2rem;
+}
+
+.legal-back {
+  color: #14b8a6;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.legal-back:hover {
+  text-decoration: underline;
+}
+
+.legal-page h1 {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #f9fafb;
+  margin-bottom: 0.5rem;
+}
+
+.legal-updated {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-bottom: 2rem;
+}
+
+.legal-section {
+  margin-bottom: 2rem;
+}
+
+.legal-section h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #f9fafb;
+  margin-bottom: 0.75rem;
+}
+
+.legal-section h3 {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #e5e7eb;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.legal-section p {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin-bottom: 0.75rem;
+}
+
+.legal-section ul,
+.legal-section ol {
+  padding-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.legal-section li {
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin-bottom: 0.375rem;
+}
+
+.legal-section a {
+  color: #14b8a6;
+  text-decoration: underline;
+}
+
+.legal-section address {
+  font-style: normal;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin-top: 0.5rem;
+}
+
+.legal-footer {
+  border-top: 1px solid #1f2937;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  text-align: center;
+}
+
+.legal-footer p {
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  margin-bottom: 0.5rem;
+}
+
+.legal-footer a {
+  color: #14b8a6;
+  text-decoration: none;
+  margin: 0 0.5rem;
+}
+
+.legal-footer a:hover {
+  text-decoration: underline;
+}
+
+/* --- Unsubscribe Page --- */
+
+.unsub-container {
+  max-width: 520px;
+}
+
+.unsub-intro {
+  font-size: 1rem;
+  color: #d1d5db;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.unsub-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.unsub-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.unsub-success {
+  background: rgba(13, 148, 136, 0.1);
+  border: 1px solid #0d9488;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.unsub-success h2 {
+  font-size: 1.25rem;
+  color: #14b8a6;
+  margin-bottom: 0.75rem;
+}
+
+.unsub-success p {
+  font-size: 0.9375rem;
+  color: #d1d5db;
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+.unsub-success a {
+  color: #14b8a6;
+}
+
+.unsub-note {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  margin-top: 2rem;
+  line-height: 1.6;
+}
+
+.unsub-note strong {
+  color: #f9fafb;
+}
+
+.unsub-note address {
+  font-style: normal;
+  margin-top: 0.5rem;
+}
