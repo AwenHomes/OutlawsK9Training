@@ -1,12 +1,35 @@
 /**
- * Outlaws K9 Training — Behavior Rescue Lead Magnet
- * Results Renderer: Risk gauge, behavior cards, CTA, email capture
+ * Outlaws K9 Training - Behavior Rescue Lead Magnet
+ * Results Renderer: Gate form, risk gauge, behavior cards, CTA
  */
 
 const ResultsRenderer = (function () {
 
+  // Store score/answers so we can reveal the report after form submission
+  var _pendingScore = null;
+  var _pendingAnswers = null;
+
   function render(score, answers) {
     const container = document.getElementById("results-content");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    // Store for later reveal
+    _pendingScore = score;
+    _pendingAnswers = answers;
+
+    // Show the gate form (contact info required before report)
+    renderGateForm(container, score);
+  }
+
+  // Called by ComplianceModule after successful form submission
+  function revealReport() {
+    var score = _pendingScore;
+    var answers = _pendingAnswers;
+    if (!score) return;
+
+    var container = document.getElementById("results-content");
     if (!container) return;
 
     container.innerHTML = "";
@@ -31,13 +54,98 @@ const ResultsRenderer = (function () {
     // CTA block
     renderCTA(container, score);
 
-    // Email capture
-    renderEmailCapture(container, score);
-
     // Animate gauge after a brief delay
     setTimeout(function () {
       animateGauge(score.percentage);
     }, 300);
+
+    // Scroll to top of results
+    container.scrollIntoView({ behavior: "smooth", block: "start" });
+
+    // Clear stored data
+    _pendingScore = null;
+    _pendingAnswers = null;
+  }
+
+  // --- Gate Form (shown before report) ---
+
+  function renderGateForm(container, score) {
+    var gateBlock = document.createElement("div");
+    gateBlock.className = "email-capture gate-form";
+
+    gateBlock.innerHTML =
+      '<div class="email-inner">' +
+        '<h2 class="gate-title">Your report for ' + escapeHtml(score.dogName) + ' is ready!</h2>' +
+        '<p class="gate-subtitle">Enter your details below to unlock your personalized behavior assessment and action plan.</p>' +
+        '<form class="lead-form" id="lead-form" novalidate>' +
+
+          // Owner Name (required)
+          '<div class="form-group">' +
+            '<label for="lead-owner-name" class="form-label">Your Name <span class="required">*</span></label>' +
+            '<input type="text" id="lead-owner-name" name="owner_name" placeholder="Your full name" required class="form-input" autocomplete="name" />' +
+          '</div>' +
+
+          // Email (required)
+          '<div class="form-group">' +
+            '<label for="lead-email" class="form-label">Email Address <span class="required">*</span></label>' +
+            '<input type="email" id="lead-email" name="email" placeholder="your@email.com" required class="form-input" autocomplete="email" />' +
+          '</div>' +
+
+          // Phone (required)
+          '<div class="form-group">' +
+            '<label for="lead-phone" class="form-label">Phone Number <span class="required">*</span></label>' +
+            '<input type="tel" id="lead-phone" name="phone" placeholder="(555) 123-4567" required class="form-input" autocomplete="tel" />' +
+          '</div>' +
+
+          // Honeypot (anti-bot, hidden)
+          '<input type="text" name="website" tabindex="-1" autocomplete="off" class="ohnohoney" />' +
+
+          // Hidden data fields
+          '<input type="hidden" name="dog_name" value="' + escapeHtml(score.dogName) + '" />' +
+          '<input type="hidden" name="breed" value="' + escapeHtml(score.breed) + '" />' +
+          '<input type="hidden" name="age_range" value="' + escapeHtml(score.ageRange) + '" />' +
+          '<input type="hidden" name="risk_level" value="' + escapeHtml(score.riskLevel.label) + '" />' +
+          '<input type="hidden" name="top_behaviors" value="' + score.topBehaviors.map(function(b) { return escapeHtml(b); }).join(",") + '" />' +
+          '<input type="hidden" name="form_loaded_at" value="' + Date.now() + '" />' +
+
+          // Email consent checkbox (required, CAN-SPAM)
+          '<div class="consent-group">' +
+            '<label class="consent-label">' +
+              '<input type="checkbox" id="email-consent" name="email_consent" required />' +
+              '<span class="consent-text">I agree to receive emails from Outlaws K9 Training with my dog\'s behavior report and training tips. I understand I can <a href="unsubscribe.html" target="_blank">unsubscribe</a> at any time.</span>' +
+            '</label>' +
+          '</div>' +
+
+          // SMS/Phone consent checkbox (TCPA, always visible since phone is required)
+          '<div class="consent-group sms-consent-group" id="sms-consent-group">' +
+            '<label class="consent-label">' +
+              '<input type="checkbox" id="sms-consent" name="sms_consent" />' +
+              '<span class="consent-text">By providing my phone number, I give Outlaws K9 Training express written consent to contact me by phone call or text message at the number provided, including by automated means, regarding dog training services. <strong>Consent is not a condition of purchase.</strong> Message and data rates may apply. Reply STOP to opt out. Estimated frequency: up to 4 messages/month.</span>' +
+            '</label>' +
+          '</div>' +
+
+          // Submit button
+          '<button type="submit" class="btn btn-email" id="lead-submit-btn">Unlock My Report</button>' +
+
+          // Form error display
+          '<div class="form-error" id="lead-form-error" role="alert" aria-live="polite"></div>' +
+
+          // Legal links
+          '<p class="legal-links">By submitting, you agree to our <a href="privacy-policy.html" target="_blank">Privacy Policy</a> and <a href="terms-of-service.html" target="_blank">Terms of Service</a>.</p>' +
+
+        '</form>' +
+
+        // AI disclaimer
+        '<p class="ai-disclaimer">This assessment is generated algorithmically and is for informational purposes only. It is not a substitute for professional veterinary or behavioral consultation. Results do not guarantee specific outcomes.</p>' +
+
+      '</div>';
+
+    container.appendChild(gateBlock);
+
+    // Initialize compliance form handling
+    if (typeof ComplianceModule !== "undefined") {
+      ComplianceModule.initForm();
+    }
   }
 
   // --- Header ---
@@ -49,7 +157,7 @@ const ResultsRenderer = (function () {
       '<h1 class="results-title">Behavior Risk Assessment for <span class="dog-name-highlight">' +
       escapeHtml(score.dogName) +
       '</span></h1>' +
-      '<p class="results-subtitle">Here\'s the honest truth about what\'s going on — and what you can do about it right now.</p>';
+      '<p class="results-subtitle">Here\'s the honest truth about what\'s going on, and what you can do about it right now.</p>';
     container.appendChild(header);
   }
 
@@ -105,7 +213,7 @@ const ResultsRenderer = (function () {
       '<div class="warning-content">' +
         '<strong>Breed-Specific Liability Notice</strong>' +
         '<p>' + escapeHtml(score.dogName) + ' is a ' + escapeHtml(score.breed) +
-        ' — a breed that faces heightened legal scrutiny when aggression or reactivity is involved. ' +
+        ', a breed that faces heightened legal scrutiny when aggression or reactivity is involved. ' +
         'Insurance claims, breed-specific legislation, and landlord restrictions are real risks. ' +
         'This makes professional intervention not just smart, but essential for keeping ' +
         escapeHtml(score.dogName) + ' safe and in your home.</p>' +
@@ -126,7 +234,7 @@ const ResultsRenderer = (function () {
 
     const cardsIntro = document.createElement("p");
     cardsIntro.className = "section-intro";
-    cardsIntro.textContent = "Here's what's actually going on — and the three things you can do today to start turning it around.";
+    cardsIntro.textContent = "Here's what's actually going on, and the three things you can do today to start turning it around.";
     cardsSection.appendChild(cardsIntro);
 
     score.topBehaviors.forEach(function (behaviorKey, index) {
@@ -193,18 +301,18 @@ const ResultsRenderer = (function () {
     if (riskWord === "critical") {
       urgencyText = "We're going to be direct: " + escapeHtml(score.dogName) +
         "'s behavior is in the danger zone. Every day without professional intervention " +
-        "is a day the problem gets harder — and more expensive — to fix. " +
+        "is a day the problem gets harder, and more expensive, to fix. " +
         "The action steps above will help manage the situation, but managing is not solving.";
     } else if (riskWord === "high") {
       urgencyText = "Here's the uncomfortable truth: " + escapeHtml(score.dogName) +
         "'s behaviors are past the \"tips and tricks\" stage. " +
-        "The action steps above are genuine first aid — they'll help — but they won't rewire " +
+        "The action steps above are genuine first aid. They'll help, but they won't rewire " +
         "the patterns driving this behavior. That takes a structured plan and someone who's done this before.";
     } else {
       urgencyText = escapeHtml(score.dogName) +
         "'s situation is manageable right now. That's the good news. " +
         "The less-good news? \"Manageable\" has a shelf life. " +
-        "These behaviors don't freeze in place — they either improve with the right approach or they escalate. " +
+        "These behaviors don't freeze in place. They either improve with the right approach or they escalate. " +
         "The action steps above are a solid start. But a solid start deserves a proper follow-through.";
     }
 
@@ -227,14 +335,14 @@ const ResultsRenderer = (function () {
         '<p class="cta-subtitle">Your dog\'s not going to train itself. Trust us, we asked.</p>' +
         '<div class="cta-description">' +
           '<p>A personalized 1-on-1 behavior modification program built around ' +
-          escapeHtml(score.dogName) + '\'s specific issues — not a generic group class ' +
+          escapeHtml(score.dogName) + '\'s specific issues, not a generic group class ' +
           'where everyone\'s problems get the same cookie-cutter answer.</p>' +
         '</div>' +
         '<ul class="cta-features">' +
           '<li>Comprehensive in-home behavior assessment</li>' +
           '<li>Custom training plan targeting ' + escapeHtml(score.dogName) + '\'s top behaviors</li>' +
           '<li>Ongoing support between sessions (because problems don\'t wait for appointments)</li>' +
-          '<li>Real results — not just obedience tricks that fall apart at the dog park</li>' +
+          '<li>Real results, not just obedience tricks that fall apart at the dog park</li>' +
         '</ul>' +
         '<div class="cta-urgency">' +
           '<!-- PLACEHOLDER: Update spots remaining count -->' +
@@ -263,86 +371,11 @@ const ResultsRenderer = (function () {
         '<div class="testimonial">' +
           '<p class="testimonial-text">"We were ready to give up on our dog. One session changed everything. ' +
           'I wish we hadn\'t waited so long."</p>' +
-          '<p class="testimonial-author">— Satisfied Client <!-- PLACEHOLDER: Replace with real testimonial --></p>' +
+          '<p class="testimonial-author">- Satisfied Client <!-- PLACEHOLDER: Replace with real testimonial --></p>' +
         '</div>' +
       '</div>';
 
     container.appendChild(cta);
-  }
-
-  // --- Lead Capture (TCPA / CAN-SPAM / DNC Compliant) ---
-
-  function renderEmailCapture(container, score) {
-    var emailBlock = document.createElement("div");
-    emailBlock.className = "email-capture";
-
-    emailBlock.innerHTML =
-      '<div class="email-inner">' +
-        '<h3>Want this report sent to your inbox?</h3>' +
-        '<p>Get ' + escapeHtml(score.dogName) + '\'s full behavior breakdown + a bonus action checklist delivered straight to your email.</p>' +
-        '<form class="lead-form" id="lead-form" novalidate>' +
-
-          // Email (required)
-          '<div class="form-group">' +
-            '<label for="lead-email" class="form-label">Email Address <span class="required">*</span></label>' +
-            '<input type="email" id="lead-email" name="email" placeholder="your@email.com" required class="form-input" autocomplete="email" />' +
-          '</div>' +
-
-          // Phone (optional)
-          '<div class="form-group">' +
-            '<label for="lead-phone" class="form-label">Phone Number <span class="optional">(optional)</span></label>' +
-            '<input type="tel" id="lead-phone" name="phone" placeholder="(555) 123-4567" class="form-input" autocomplete="tel" />' +
-          '</div>' +
-
-          // Honeypot (anti-bot, hidden)
-          '<input type="text" name="website" tabindex="-1" autocomplete="off" class="ohnohoney" />' +
-
-          // Hidden data fields
-          '<input type="hidden" name="dog_name" value="' + escapeHtml(score.dogName) + '" />' +
-          '<input type="hidden" name="breed" value="' + escapeHtml(score.breed) + '" />' +
-          '<input type="hidden" name="age_range" value="' + escapeHtml(score.ageRange) + '" />' +
-          '<input type="hidden" name="risk_level" value="' + escapeHtml(score.riskLevel.label) + '" />' +
-          '<input type="hidden" name="top_behaviors" value="' + score.topBehaviors.map(function(b) { return escapeHtml(b); }).join(",") + '" />' +
-          '<input type="hidden" name="form_loaded_at" value="' + Date.now() + '" />' +
-
-          // Email consent checkbox (required — CAN-SPAM)
-          '<div class="consent-group">' +
-            '<label class="consent-label">' +
-              '<input type="checkbox" id="email-consent" name="email_consent" required />' +
-              '<span class="consent-text">I agree to receive emails from Outlaws K9 Training with my dog\'s behavior report and training tips. I understand I can <a href="unsubscribe.html" target="_blank">unsubscribe</a> at any time.</span>' +
-            '</label>' +
-          '</div>' +
-
-          // SMS/Phone consent checkbox (TCPA — shown only when phone is entered)
-          '<div class="consent-group sms-consent-group" id="sms-consent-group" style="display:none;">' +
-            '<label class="consent-label">' +
-              '<input type="checkbox" id="sms-consent" name="sms_consent" />' +
-              '<span class="consent-text">By providing my phone number, I give Outlaws K9 Training express written consent to contact me by phone call or text message at the number provided, including by automated means, regarding dog training services. <strong>Consent is not a condition of purchase.</strong> Message and data rates may apply. Reply STOP to opt out. Estimated frequency: up to 4 messages/month.</span>' +
-            '</label>' +
-          '</div>' +
-
-          // Submit button
-          '<button type="submit" class="btn btn-email" id="lead-submit-btn">Send My Report</button>' +
-
-          // Form error display
-          '<div class="form-error" id="lead-form-error" role="alert" aria-live="polite"></div>' +
-
-          // Legal links
-          '<p class="legal-links">By submitting, you agree to our <a href="privacy-policy.html" target="_blank">Privacy Policy</a> and <a href="terms-of-service.html" target="_blank">Terms of Service</a>.</p>' +
-
-        '</form>' +
-
-        // AI disclaimer
-        '<p class="ai-disclaimer">This assessment is generated algorithmically and is for informational purposes only. It is not a substitute for professional veterinary or behavioral consultation. Results do not guarantee specific outcomes.</p>' +
-
-      '</div>';
-
-    container.appendChild(emailBlock);
-
-    // Initialize compliance form handling
-    if (typeof ComplianceModule !== "undefined") {
-      ComplianceModule.initForm();
-    }
   }
 
   // --- Utilities ---
@@ -359,6 +392,7 @@ const ResultsRenderer = (function () {
   }
 
   return {
-    render: render
+    render: render,
+    revealReport: revealReport
   };
 })();

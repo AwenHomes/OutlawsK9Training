@@ -1,5 +1,5 @@
 /**
- * Outlaws K9 Training — Unsubscribe / Opt-Out Edge Function
+ * Outlaws K9 Training - Unsubscribe / Opt-Out Edge Function
  *
  * CAN-SPAM and TCPA compliant one-click unsubscribe mechanism.
  * Adds contact to suppression list and updates lead status.

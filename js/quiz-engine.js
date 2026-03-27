@@ -1,5 +1,5 @@
 /**
- * Outlaws K9 Training — Behavior Rescue Lead Magnet
+ * Outlaws K9 Training - Behavior Rescue Lead Magnet
  * Quiz Engine: State management, scoring algorithm, flow control
  */
 

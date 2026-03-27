@@ -1,5 +1,5 @@
 /**
- * Outlaws K9 Training — Behavior Rescue Lead Magnet
+ * Outlaws K9 Training - Behavior Rescue Lead Magnet
  * Styles: Mobile-first, teal/black/red branding
  */
 
@@ -506,7 +506,7 @@ input[type="email"]::placeholder {
   transition: transform 0.1s linear;
 }
 
-/* Percentage + label displayed below the arc — no clipping */
+/* Percentage + label displayed below the arc - no clipping */
 .gauge-stats {
   display: flex;
   flex-direction: column;
@@ -1032,7 +1032,7 @@ input[type="email"]::placeholder {
   box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.25);
 }
 
-/* Honeypot field — invisible to real users */
+/* Honeypot field - invisible to real users */
 .ohnohoney {
   opacity: 0;
   position: absolute;
