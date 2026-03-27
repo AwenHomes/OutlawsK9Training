@@ -316,11 +316,12 @@ const BEHAVIOR_DATABASE = {
 // Max possible score for normalization
 const MAX_SCORE = 35; // top2 behaviors (10+10) + age(3) + duration(4) + frequency(5) + attempts(3)
 
-// Risk level thresholds - note: there is no "Low" tier. Everyone needs help.
+// Risk level thresholds
 const RISK_LEVELS = [
-  { min: 0, max: 30, label: "Moderate", color: "#eab308", className: "moderate" },
-  { min: 31, max: 60, label: "High", color: "#f97316", className: "high" },
-  { min: 61, max: 100, label: "Critical", color: "#dc2626", className: "critical" }
+  { min: 0, max: 25, label: "Low", color: "#22c55e", className: "low" },
+  { min: 26, max: 50, label: "Moderate", color: "#eab308", className: "moderate" },
+  { min: 51, max: 75, label: "High", color: "#f97316", className: "high" },
+  { min: 76, max: 100, label: "Critical", color: "#dc2626", className: "critical" }
 ];
 
 // Aggression/reactivity behavior keys (used for breed liability flag)
