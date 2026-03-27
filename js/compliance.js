@@ -1,5 +1,5 @@
 /**
- * Outlaws K9 Training — Compliance Module
+ * Outlaws K9 Training - Compliance Module
  *
  * Handles TCPA/CAN-SPAM compliant form submission,
  * phone validation, consent enforcement, honeypot check,
@@ -10,7 +10,7 @@ var ComplianceModule = (function () {
   "use strict";
 
   // ============================================================
-  // Configuration — update SUPABASE_URL after project creation
+  // Configuration - update SUPABASE_URL after project creation
   // ============================================================
   var CONFIG = {
     SUPABASE_FUNCTION_URL: "https://tfillhnxuumdfefkoadb.supabase.co/functions/v1",
@@ -75,20 +75,11 @@ var ComplianceModule = (function () {
     var smsConsentGroup = document.getElementById("sms-consent-group");
     var smsCheckbox = document.getElementById("sms-consent");
 
-    // Phone field: format on input, toggle SMS consent visibility
+    // Phone field: format on input
     if (phoneInput) {
       phoneInput.addEventListener("input", function () {
         var raw = phoneInput.value;
         phoneInput.value = formatPhoneUS(raw);
-
-        var hasPhone = phoneInput.value.replace(/\D/g, "").length > 0;
-        if (smsConsentGroup) {
-          smsConsentGroup.style.display = hasPhone ? "block" : "none";
-        }
-        // Uncheck SMS consent if phone is cleared
-        if (!hasPhone && smsCheckbox) {
-          smsCheckbox.checked = false;
-        }
       });
     }
 
@@ -124,42 +115,52 @@ var ComplianceModule = (function () {
       return;
     }
 
-    // 3. Email validation
+    // 3. Owner name validation
+    var ownerName = (formData.get("owner_name") || "").toString().trim();
+    if (!ownerName) {
+      showError("Please enter your name.");
+      return;
+    }
+
+    // 4. Email validation
     var email = (formData.get("email") || "").toString().trim();
     if (!email || !isValidEmail(email)) {
       showError("Please enter a valid email address.");
       return;
     }
 
-    // 4. Email consent required
+    // 5. Phone validation (required)
+    var phone = (formData.get("phone") || "").toString().trim();
+    if (!phone) {
+      showError("Please enter your phone number.");
+      return;
+    }
+    if (!isValidUSPhone(phone)) {
+      showError("Please enter a valid US phone number (10 digits).");
+      return;
+    }
+
+    // 6. Email consent required
     var emailConsent = document.getElementById("email-consent");
     if (!emailConsent || !emailConsent.checked) {
       showError("Please agree to receive emails to get your report.");
       return;
     }
 
-    // 5. Phone validation (if provided)
-    var phone = (formData.get("phone") || "").toString().trim();
-    if (phone) {
-      if (!isValidUSPhone(phone)) {
-        showError("Please enter a valid US phone number (10 digits).");
-        return;
-      }
-
-      // SMS consent required when phone is provided
-      var smsCheckbox = document.getElementById("sms-consent");
-      if (!smsCheckbox || !smsCheckbox.checked) {
-        showError("Phone/SMS consent is required when providing a phone number.");
-        return;
-      }
+    // 7. SMS consent required (phone is always provided)
+    var smsCheckbox = document.getElementById("sms-consent");
+    if (!smsCheckbox || !smsCheckbox.checked) {
+      showError("Phone/SMS consent is required to receive your report.");
+      return;
     }
 
     // --- Build payload ---
 
     var topBehaviors = (formData.get("top_behaviors") || "").toString();
     var payload = {
+      owner_name: ownerName,
       email: email,
-      phone: phone || null,
+      phone: phone,
       dog_name: (formData.get("dog_name") || "").toString(),
       breed: (formData.get("breed") || "").toString(),
       age_range: (formData.get("age_range") || "").toString(),
@@ -168,14 +169,14 @@ var ComplianceModule = (function () {
       source_url: window.location.href,
       form_loaded_at: formLoadedAt,
       email_consent: true,
-      sms_consent: phone ? true : false,
-      website: "" // Honeypot — always empty for real submissions
+      sms_consent: true,
+      website: "" // Honeypot - always empty for real submissions
     };
 
     // --- Submit to Edge Function ---
 
     btn.disabled = true;
-    btn.textContent = "Sending...";
+    btn.textContent = "Unlocking...";
 
     fetch(CONFIG.SUPABASE_FUNCTION_URL + CONFIG.SUBMIT_ENDPOINT, {
       method: "POST",
@@ -191,31 +192,25 @@ var ComplianceModule = (function () {
         if (result.status === 429) {
           showError("Too many submissions. Please try again later.");
           btn.disabled = false;
-          btn.textContent = "Send My Report";
+          btn.textContent = "Unlock My Report";
           return;
         }
         if (result.status >= 400 && result.data.error) {
           showError(result.data.error);
           btn.disabled = false;
-          btn.textContent = "Send My Report";
+          btn.textContent = "Unlock My Report";
           return;
         }
-        showSuccess(btn);
+        // Reveal the full report
+        if (typeof ResultsRenderer !== "undefined" && ResultsRenderer.revealReport) {
+          ResultsRenderer.revealReport();
+        }
       })
       .catch(function () {
         showError("Something went wrong. Please try again.");
         btn.disabled = false;
-        btn.textContent = "Send My Report";
+        btn.textContent = "Unlock My Report";
       });
-  }
-
-  function showSuccess(btn) {
-    if (btn) {
-      btn.textContent = "Sent! Check your inbox.";
-      btn.disabled = true;
-      btn.classList.add("btn-success");
-    }
-    clearError();
   }
 
   // ============================================================

@@ -1,5 +1,5 @@
 /**
- * Outlaws K9 Training — Lead Submission Edge Function
+ * Outlaws K9 Training - Lead Submission Edge Function
  *
  * Server-side validation, rate limiting, bot protection,
  * and TCPA/CAN-SPAM compliant consent recording.
@@ -17,7 +17,7 @@ const MIN_SUBMISSION_TIME_MS = 3000; // Reject if form submitted in < 3 seconds 
 const MAX_FIELD_LENGTH = 500;
 const ALLOWED_ORIGINS = Deno.env.get("ALLOWED_ORIGINS")?.split(",") ?? [];
 
-// Consent language — versioned for audit trail
+// Consent language - versioned for audit trail
 const CONSENT_VERSION = "v1.0";
 const EMAIL_CONSENT_TEXT =
   "I agree to receive emails from Outlaws K9 Training with my dog's behavior report and training tips. I understand I can unsubscribe at any time.";
@@ -103,7 +103,7 @@ Deno.serve(async (req: Request) => {
 
     // 1. Honeypot check
     if (body.website) {
-      // Silent rejection — bots won't know they failed
+      // Silent rejection - bots won't know they failed
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -155,6 +155,18 @@ Deno.serve(async (req: Request) => {
 
     // --- Input Validation ---
 
+    // Owner name (required)
+    const ownerName = typeof body.owner_name === "string" ? sanitizeText(body.owner_name) : "";
+    if (!ownerName) {
+      return new Response(
+        JSON.stringify({ error: "Your name is required." }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
     const email = typeof body.email === "string" ? sanitizeText(body.email).toLowerCase() : "";
     if (!email || !isValidEmail(email)) {
       return new Response(
@@ -166,20 +178,27 @@ Deno.serve(async (req: Request) => {
       );
     }
 
+    // Phone (required)
     const phoneRaw = typeof body.phone === "string" ? sanitizeText(body.phone) : "";
-    let phone: string | null = null;
-    if (phoneRaw) {
-      if (!isValidPhone(phoneRaw)) {
-        return new Response(
-          JSON.stringify({ error: "Please enter a valid US phone number." }),
-          {
-            status: 400,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          }
-        );
-      }
-      phone = normalizePhone(phoneRaw);
+    if (!phoneRaw) {
+      return new Response(
+        JSON.stringify({ error: "A phone number is required." }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
     }
+    if (!isValidPhone(phoneRaw)) {
+      return new Response(
+        JSON.stringify({ error: "Please enter a valid US phone number." }),
+        {
+          status: 400,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+    let phone: string | null = normalizePhone(phoneRaw);
 
     const emailConsent = body.email_consent === true;
     const smsConsent = body.sms_consent === true;
@@ -232,7 +251,7 @@ Deno.serve(async (req: Request) => {
       .limit(1);
 
     if (emailSuppressed && emailSuppressed.length > 0) {
-      // Don't reveal suppression status — return success silently
+      // Don't reveal suppression status - return success silently
       return new Response(JSON.stringify({ success: true }), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -257,6 +276,7 @@ Deno.serve(async (req: Request) => {
     const { data: lead, error: leadError } = await supabase
       .from("leads")
       .insert({
+        owner_name: ownerName,
         email,
         phone,
         dog_name: dogName,
@@ -313,7 +333,7 @@ Deno.serve(async (req: Request) => {
 
     if (consentError) {
       console.error("Consent record insert error:", consentError);
-      // Lead was saved — consent error is logged but doesn't fail the request
+      // Lead was saved - consent error is logged but doesn't fail the request
     }
 
     return new Response(JSON.stringify({ success: true }), {

@@ -1,5 +1,5 @@
 -- ============================================================
--- Outlaws K9 Training — Compliance & Lead Management Schema
+-- Outlaws K9 Training - Compliance & Lead Management Schema
 -- TCPA / CAN-SPAM / DNC compliant data storage
 -- ============================================================
 
@@ -89,14 +89,14 @@ CREATE INDEX idx_rate_limit_ip   ON rate_limit_log (ip_address, created_at);
 -- DELETE FROM rate_limit_log WHERE created_at < now() - INTERVAL '24 hours';
 
 -- ============================================================
--- Row Level Security — all tables locked to service_role only
+-- Row Level Security - all tables locked to service_role only
 -- ============================================================
 ALTER TABLE leads            ENABLE ROW LEVEL SECURITY;
 ALTER TABLE consent_records  ENABLE ROW LEVEL SECURITY;
 ALTER TABLE suppression_list ENABLE ROW LEVEL SECURITY;
 ALTER TABLE rate_limit_log   ENABLE ROW LEVEL SECURITY;
 
--- No public access policies — only service_role (via Edge Functions) can read/write
+-- No public access policies - only service_role (via Edge Functions) can read/write
 -- This ensures all data access goes through server-side validation
 
 -- ============================================================
