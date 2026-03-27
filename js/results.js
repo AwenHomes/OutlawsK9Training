@@ -165,7 +165,19 @@ const ResultsRenderer = (function () {
 
   function renderGauge(container, score) {
     const gaugeWrap = document.createElement("div");
-    gaugeWrap.className = "gauge-container";
+    gaugeWrap.className = "gauge-container" + (score.percentage > 60 ? " gauge-urgent" : "");
+
+    var messageText = "";
+    var riskClass = score.riskLevel.className;
+    if (riskClass === "low") {
+      messageText = escapeHtml(score.dogName) + "'s behaviors are manageable — early action prevents escalation.";
+    } else if (riskClass === "moderate") {
+      messageText = escapeHtml(score.dogName) + "'s behaviors need attention before they become harder to fix.";
+    } else if (riskClass === "high") {
+      messageText = escapeHtml(score.dogName) + " may be exposing you to significant risk.";
+    } else {
+      messageText = "Immediate action recommended to avoid costly issues.";
+    }
 
     gaugeWrap.innerHTML =
       '<div class="gauge-arc">' +
@@ -174,13 +186,21 @@ const ResultsRenderer = (function () {
         '</div>' +
       '</div>' +
       '<div class="gauge-stats">' +
-        '<span class="gauge-percentage" id="gauge-percentage">0%</span>' +
-        '<span class="gauge-risk-label ' + score.riskLevel.className + '">' +
+        '<span class="gauge-percentage" id="gauge-percentage" style="color:' + score.riskLevel.color + '">0%</span>' +
+        '<span class="gauge-risk-label ' + riskClass + '">' +
           score.riskLevel.label + ' Risk' +
         '</span>' +
+        '<p class="gauge-message">' + messageText + '</p>' +
       '</div>';
 
     container.appendChild(gaugeWrap);
+  }
+
+  function getColorForPercent(pct) {
+    if (pct <= 25) return "#22c55e";
+    if (pct <= 50) return "#eab308";
+    if (pct <= 75) return "#f97316";
+    return "#dc2626";
   }
 
   function animateGauge(targetPercent) {
@@ -199,6 +219,7 @@ const ResultsRenderer = (function () {
       // Gauge rotation: 0% = -90deg (left), 100% = 90deg (right)
       const rotation = -90 + (current / 100) * 180;
       fill.style.transform = "rotate(" + rotation + "deg)";
+      fill.style.background = getColorForPercent(current);
       percentText.textContent = current + "%";
     }, 25);
   }
@@ -308,12 +329,18 @@ const ResultsRenderer = (function () {
         "'s behaviors are past the \"tips and tricks\" stage. " +
         "The action steps above are genuine first aid. They'll help, but they won't rewire " +
         "the patterns driving this behavior. That takes a structured plan and someone who's done this before.";
-    } else {
+    } else if (riskWord === "moderate") {
       urgencyText = escapeHtml(score.dogName) +
         "'s situation is manageable right now. That's the good news. " +
         "The less-good news? \"Manageable\" has a shelf life. " +
         "These behaviors don't freeze in place. They either improve with the right approach or they escalate. " +
         "The action steps above are a solid start. But a solid start deserves a proper follow-through.";
+    } else {
+      urgencyText = escapeHtml(score.dogName) +
+        "'s behaviors are on the milder end, and that's genuinely good news. " +
+        "But mild doesn't mean \"no action needed.\" Small issues have a way of becoming big ones " +
+        "when left on autopilot. The action steps above are a great starting point. " +
+        "A little guidance now saves a lot of frustration later.";
     }
 
     block.innerHTML =
@@ -349,7 +376,7 @@ const ResultsRenderer = (function () {
           '<p class="urgency-text">Only accepting <strong>5 new clients</strong> this month.</p>' +
           '<p class="urgency-subtext">We keep our roster small on purpose. Every dog gets our full attention.</p>' +
         '</div>' +
-        '<a href="#" class="btn btn-cta" id="book-now-btn">' +
+        '<a href="#" class="btn btn-cta cta-' + score.riskLevel.className + '" id="book-now-btn">' +
           '<!-- PLACEHOLDER: Replace href with booking URL -->' +
           'Claim Your Spot Now' +
         '</a>' +

@@ -21,6 +21,7 @@
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;
   --color-gray-900: #111827;
+  --color-green: #22c55e;
   --color-yellow: #eab308;
   --color-orange: #f97316;
 
@@ -394,9 +395,42 @@ input[type="email"]::placeholder {
 }
 
 .btn-cta:hover {
-  background: var(--color-accent-dark);
   transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(220, 38, 38, 0.4);
+}
+
+/* CTA urgency variants */
+.btn-cta.cta-low {
+  background: var(--color-primary);
+}
+.btn-cta.cta-low:hover {
+  background: var(--color-primary-dark);
+  box-shadow: 0 4px 20px rgba(13, 148, 136, 0.4);
+}
+
+.btn-cta.cta-moderate {
+  background: var(--color-yellow);
+  color: var(--color-gray-900);
+}
+.btn-cta.cta-moderate:hover {
+  background: #ca9a06;
+  box-shadow: 0 4px 20px rgba(234, 179, 8, 0.4);
+}
+
+.btn-cta.cta-high {
+  background: var(--color-orange);
+}
+.btn-cta.cta-high:hover {
+  background: #ea580c;
+  box-shadow: 0 4px 20px rgba(249, 115, 22, 0.4);
+}
+
+.btn-cta.cta-critical {
+  background: var(--color-accent);
+  box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+}
+.btn-cta.cta-critical:hover {
+  background: var(--color-accent-dark);
+  box-shadow: 0 4px 24px rgba(220, 38, 38, 0.5);
 }
 
 .btn-email {
@@ -500,7 +534,7 @@ input[type="email"]::placeholder {
   left: 0;
   width: inherit;
   height: 100%;
-  background: linear-gradient(90deg, var(--color-yellow), var(--color-orange), var(--color-accent));
+  background: var(--color-green);
   transform-origin: center top;
   transform: rotate(-90deg);
   transition: transform 0.1s linear;
@@ -544,10 +578,39 @@ input[type="email"]::placeholder {
   border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
+.gauge-risk-label.low {
+  background: rgba(34, 197, 94, 0.15);
+  color: var(--color-green);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
 .gauge-risk-label.critical {
   background: rgba(220, 38, 38, 0.15);
   color: var(--color-accent);
   border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+/* Gauge dynamic message */
+.gauge-message {
+  font-size: 0.95rem;
+  color: var(--color-gray-300);
+  margin-top: 0.75rem;
+  line-height: 1.5;
+  max-width: 360px;
+}
+
+/* Urgency animation for risk > 60% */
+@keyframes gaugePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.gauge-urgent .gauge-percentage {
+  animation: gaugePulse 2s ease-in-out infinite;
+}
+
+.gauge-urgent .gauge-arc {
+  filter: drop-shadow(0 0 12px rgba(220, 38, 38, 0.35));
 }
 
 /* ===== Breed Warning ===== */
