@@ -17,7 +17,10 @@ function getCorsHeaders(origin: string | null): Record<string, string> {
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
   };
-  if (origin && ALLOWED_ORIGINS.includes(origin)) {
+  // If no origins configured, allow all (public lead magnet form)
+  if (ALLOWED_ORIGINS.length === 0) {
+    headers["Access-Control-Allow-Origin"] = "*";
+  } else if (origin && ALLOWED_ORIGINS.includes(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
   }
   return headers;
