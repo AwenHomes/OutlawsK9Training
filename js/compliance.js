@@ -13,8 +13,7 @@ var ComplianceModule = (function () {
   // Configuration — update SUPABASE_URL after project creation
   // ============================================================
   var CONFIG = {
-    // PLACEHOLDER: Replace with your Supabase project URL
-    SUPABASE_FUNCTION_URL: "https://YOUR_PROJECT_REF.supabase.co/functions/v1",
+    SUPABASE_FUNCTION_URL: "https://tfillhnxuumdfefkoadb.supabase.co/functions/v1",
     SUBMIT_ENDPOINT: "/submit-lead",
     UNSUBSCRIBE_ENDPOINT: "/unsubscribe",
     MIN_SUBMIT_TIME_MS: 3000
